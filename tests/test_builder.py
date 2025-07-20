@@ -45,5 +45,5 @@ def test_install_repo(tmp_path: Path, monkeypatch):
     assert "python3-pip" in text
 
     client.images.build.assert_called_once_with(
-        path=str(expected_dir), tag="myrepo", rm=True, decode=True
+        path=str(expected_dir), tag="myrepo", rm=True, decode=False
     )

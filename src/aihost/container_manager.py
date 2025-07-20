@@ -70,11 +70,13 @@ def rebuild_container(name: str, path: str) -> None:
     """
 
     client = _client()
+    # Disable docker-py decoding so that build output is handled
+    # consistently as dictionaries.
     _, logs = client.images.build(
         path=path,
         tag=name.lower(),
         rm=True,
-        decode=True,
+        decode=False,
     )
     for chunk in logs:
         if "stream" in chunk:
