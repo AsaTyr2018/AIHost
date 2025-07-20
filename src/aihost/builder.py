@@ -75,8 +75,11 @@ def build_image(name: str, path: Path) -> None:
     """Build the Docker image located at *path* and show progress."""
 
     client = _client()
+    # Docker already decodes build output into dictionaries, so disable
+    # additional decoding to avoid bytes/string mismatches in newer
+    # docker-py versions.
     _, logs = client.images.build(
-        path=str(path), tag=_normalize_tag(name), rm=True, decode=True
+        path=str(path), tag=_normalize_tag(name), rm=True, decode=False
     )
     _print_build_logs(logs)
 

@@ -60,5 +60,5 @@ def test_start_stop_remove_rebuild():
     container.remove.assert_called_once_with(force=True)
 
     client.images.build.assert_called_once_with(
-        path=".", tag="mycontainer", rm=True, decode=True
+        path=".", tag="mycontainer", rm=True, decode=False
     )  # noqa: E501
