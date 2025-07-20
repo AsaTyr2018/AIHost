@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-REPO_URL="https://github.com/example/AIHost.git"
+REPO_URL="https://github.com/AsaTyr2018/AIHost"
 APP_DIR="/opt/AIHost"
 SERVICE_FILE="/etc/systemd/system/aihost.service"
 
