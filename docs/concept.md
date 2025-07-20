@@ -24,8 +24,8 @@ those repositories.
      directory.
    - If the repository contains a `requirements.txt` file, the
      container is built using a base image with GPU/AI support. This
-     default base image is configurable but typically something like
-     `nvidia/cuda:12.1.1-base` with Python included.
+    default base image is configurable but typically something like
+    `nvidia/cuda:12.1.1-base-ubuntu20.04` with Python included.
   - The install process writes a simple Dockerfile using the base
     image, copies the repo content, installs dependencies and sets the
     default command to the provided start command. This logic is

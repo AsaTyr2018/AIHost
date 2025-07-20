@@ -8,7 +8,11 @@ import docker
 from .registry import RepoInfo
 
 
-DEFAULT_BASE_IMAGE = "nvidia/cuda:12.1.1-base"
+# Use a specific CUDA base image tag that exists on Docker Hub.
+# The previous tag `12.1.1-base` is invalid and caused build failures
+# because the manifest is missing. The `ubuntu20.04` variant is
+# available and includes Python.
+DEFAULT_BASE_IMAGE = "nvidia/cuda:12.1.1-base-ubuntu20.04"
 DATA_DIR = Path("data")
 
 
