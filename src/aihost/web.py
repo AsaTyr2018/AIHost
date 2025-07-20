@@ -11,6 +11,7 @@ from .container_manager import (
     remove_container,
 )
 from .registry import list_repos, add_repo, delete_repo
+from .builder import install_repo
 
 
 app = Flask(__name__)
@@ -38,6 +39,10 @@ def repos():
     if request.method == "POST":
         if "delete" in request.form:
             delete_repo(request.form["delete"])
+        elif "install" in request.form:
+            name = request.form["install"]
+            repo = next(r for r in list_repos() if r.name == name)
+            install_repo(repo)
         else:
             add_repo(
                 request.form["name"],
