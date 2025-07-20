@@ -11,6 +11,7 @@ class RepoInfo:
     name: str
     url: str
     start_command: str
+    requirements_file: str = "requirements.txt"
 
 
 REGISTRY_FILE = Path("data/registry.json")
@@ -20,7 +21,12 @@ def _load() -> List[RepoInfo]:
     if not REGISTRY_FILE.exists():
         return []
     data = json.loads(REGISTRY_FILE.read_text())
-    return [RepoInfo(**item) for item in data]
+    repos: List[RepoInfo] = []
+    for item in data:
+        if "requirements_file" not in item:
+            item["requirements_file"] = "requirements.txt"
+        repos.append(RepoInfo(**item))
+    return repos
 
 
 def _save(repos: List[RepoInfo]) -> None:
@@ -32,11 +38,23 @@ def list_repos() -> List[RepoInfo]:
     return _load()
 
 
-def add_repo(name: str, url: str, start_command: str) -> None:
+def add_repo(
+    name: str,
+    url: str,
+    start_command: str,
+    requirements_file: str = "requirements.txt",
+) -> None:
     repos = _load()
     if any(r.name == name for r in repos):
         raise ValueError(f"Repository '{name}' already exists")
-    repos.append(RepoInfo(name=name, url=url, start_command=start_command))
+    repos.append(
+        RepoInfo(
+            name=name,
+            url=url,
+            start_command=start_command,
+            requirements_file=requirements_file,
+        )
+    )
     _save(repos)
 
 

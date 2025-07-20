@@ -28,13 +28,16 @@ def clone_repo(repo: RepoInfo, dest: Path) -> None:
 
 
 def write_dockerfile(
-    dest: Path, start_command: str, base_image: str = DEFAULT_BASE_IMAGE
+    dest: Path,
+    start_command: str,
+    requirements_file: str = "requirements.txt",
+    base_image: str = DEFAULT_BASE_IMAGE,
 ) -> None:
     dockerfile = dest / "Dockerfile"
     content = f"""FROM {base_image}
 WORKDIR /app
 COPY . /app
-RUN if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+RUN if [ -f {requirements_file} ]; then pip install -r {requirements_file}; fi  # noqa
 CMD {start_command}
 """
     dockerfile.write_text(content)
@@ -48,5 +51,10 @@ def build_image(name: str, path: Path) -> None:
 def install_repo(repo: RepoInfo, base_image: str = DEFAULT_BASE_IMAGE) -> None:
     dest = DATA_DIR / repo.name
     clone_repo(repo, dest)
-    write_dockerfile(dest, repo.start_command, base_image)
+    write_dockerfile(
+        dest,
+        repo.start_command,
+        requirements_file=repo.requirements_file,
+        base_image=base_image,
+    )
     build_image(repo.name, dest)

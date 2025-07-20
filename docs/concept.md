@@ -22,7 +22,8 @@ those repositories.
 3. **Installation Process**
    - On install the system performs `git clone` into a managed
      directory.
-   - If the repository contains a `requirements.txt` file, the
+   - If the repository contains a requirements file (defaults to
+     `requirements.txt` but can be specified in the web form), the
      container is built using a base image with GPU/AI support. This
     default base image is configurable but typically something like
     `nvidia/cuda:12.1.1-base-ubuntu20.04` with Python included.

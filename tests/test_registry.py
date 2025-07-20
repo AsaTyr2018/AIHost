@@ -17,13 +17,14 @@ def test_registry(tmp_path: Path, monkeypatch):
     file = tmp_path / "registry.json"
     monkeypatch.setattr("aihost.registry.REGISTRY_FILE", file)
 
-    add_repo("repo1", "https://example.com", "run.sh")
+    add_repo("repo1", "https://example.com", "run.sh", "reqs.txt")
     repos = list_repos()
     assert repos == [
         RepoInfo(
             name="repo1",
             url="https://example.com",
             start_command="run.sh",
+            requirements_file="reqs.txt",
         )
     ]
 

@@ -17,15 +17,19 @@
     <div class="mb-2">
       <input class="form-control" name="start_command" placeholder="Start Command" required />
     </div>
+    <div class="mb-2">
+      <input class="form-control" name="requirements_file" placeholder="Requirements File (optional)" />
+    </div>
     <button class="btn btn-primary">Add Repo</button>
   </form>
   <table class="table table-dark table-striped rounded">
-    <tr><th>Name</th><th>URL</th><th>Start Command</th><th colspan="2"></th></tr>
+    <tr><th>Name</th><th>URL</th><th>Start Command</th><th>Requirements</th><th colspan="2"></th></tr>
     {% for r in repos %}
     <tr>
       <td>{{ r.name }}</td>
       <td>{{ r.url }}</td>
       <td>{{ r.start_command }}</td>
+      <td>{{ r.requirements_file }}</td>
       <td>
         <form class="d-inline-block rounded" method="post">
           <button class="btn btn-sm btn-secondary" name="install" value="{{ r.name }}">Install</button>
