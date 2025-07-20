@@ -43,6 +43,11 @@ those repositories.
    - The application is built with Flask for rapid development, but
      this can be swapped out if needed.
 
+
+## Container Manager
+
+After containers are built, AIHost detects them from the Docker host and lists them in the interface. Each listed container shows its name and any exposed ports as clickable links. Users can start, stop, rebuild or remove containers directly from the list.
+
 ## Directory Layout
 
 - `src/` – Web server and service logic.
