@@ -33,6 +33,8 @@ those repositories.
     implemented in the `aihost.builder` module which builds the Docker
     image after cloning the repository. The web interface exposes this
     functionality with an **Install** button on the repository page.
+  - Docker image tags are normalised to lowercase so builds succeed on
+    all Docker hosts.
 
 4. **Container Management**
    - Docker Compose is used to orchestrate containers. Each registered

@@ -12,7 +12,7 @@ from aihost import builder  # noqa: E402
 
 def test_install_repo(tmp_path: Path, monkeypatch):
     repo = RepoInfo(
-        name="myrepo",
+        name="MyRepo",
         url="https://example.com/repo.git",
         start_command="python app.py",
         requirements_file="reqs.txt",
@@ -41,7 +41,8 @@ def test_install_repo(tmp_path: Path, monkeypatch):
     assert builder.DEFAULT_BASE_IMAGE in text
     assert repo.start_command in text
     assert "reqs.txt" in text
+    assert "python3-pip" in text
 
     client.images.build.assert_called_once_with(
-        path=str(expected_dir), tag=repo.name, rm=True
+        path=str(expected_dir), tag="myrepo", rm=True
     )

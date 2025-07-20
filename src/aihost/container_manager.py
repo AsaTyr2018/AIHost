@@ -70,4 +70,4 @@ def rebuild_container(name: str, path: str) -> None:
     """
 
     client = _client()
-    client.images.build(path=path, tag=name, rm=True)
+    client.images.build(path=path, tag=name.lower(), rm=True)
