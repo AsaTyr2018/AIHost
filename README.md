@@ -21,9 +21,11 @@ form accepts a custom requirements file name in case the project does
 not use the default `requirements.txt`.
 
 The `aihost.builder` module handles installation of repositories. It
-clones the specified Git repository, generates a Dockerfile based on the
-CUDA image `nvidia/cuda:12.1.1-base-ubuntu20.04` and builds a Docker image ready for
-execution.
+clones the specified Git repository, generates a Dockerfile based on
+the CUDA image `nvidia/cuda:12.1.1-base-ubuntu20.04` and builds a Docker image
+ready for execution.
+Build logs are streamed to the console so progress is visible during
+installation or container rebuilds.
 
 A small Flask based web interface exposes these features. The interface
 uses a dark theme with rounded elements. The dashboard shows CPU and

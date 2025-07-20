@@ -20,6 +20,7 @@ def _mock_client(container: MagicMock) -> MagicMock:
     client = MagicMock()
     client.containers.list.return_value = [container]
     client.containers.get.return_value = container
+    client.images.build.return_value = (MagicMock(), [])
     return client
 
 
@@ -59,5 +60,5 @@ def test_start_stop_remove_rebuild():
     container.remove.assert_called_once_with(force=True)
 
     client.images.build.assert_called_once_with(
-        path=".", tag="mycontainer", rm=True
+        path=".", tag="mycontainer", rm=True, decode=True
     )  # noqa: E501

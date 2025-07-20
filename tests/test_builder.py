@@ -28,6 +28,7 @@ def test_install_repo(tmp_path: Path, monkeypatch):
     monkeypatch.setattr(builder.subprocess, "check_call", fake_call)
 
     client = MagicMock()
+    client.images.build.return_value = (MagicMock(), [])
     monkeypatch.setattr(builder, "_client", lambda: client)
 
     builder.install_repo(repo)
@@ -44,5 +45,5 @@ def test_install_repo(tmp_path: Path, monkeypatch):
     assert "python3-pip" in text
 
     client.images.build.assert_called_once_with(
-        path=str(expected_dir), tag="myrepo", rm=True
+        path=str(expected_dir), tag="myrepo", rm=True, decode=True
     )
