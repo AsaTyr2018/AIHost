@@ -26,9 +26,11 @@ those repositories.
      container is built using a base image with GPU/AI support. This
      default base image is configurable but typically something like
      `nvidia/cuda:12.1.1-base` with Python included.
-   - The install process writes a simple Dockerfile using the base
-     image, copies the repo content, installs dependencies and sets the
-     default command to the provided start command.
+  - The install process writes a simple Dockerfile using the base
+    image, copies the repo content, installs dependencies and sets the
+    default command to the provided start command. This logic is
+    implemented in the `aihost.builder` module which builds the Docker
+    image after cloning the repository.
 
 4. **Container Management**
    - Docker Compose is used to orchestrate containers. Each registered

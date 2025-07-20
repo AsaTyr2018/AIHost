@@ -13,6 +13,11 @@ containers on the local Docker host. The manager lists container names
 along with exposed ports as clickable links and provides start, stop,
 rebuild and remove actions.
 
+The `aihost.builder` module handles installation of repositories. It
+clones the specified Git repository, generates a Dockerfile based on the
+CUDA image `nvidia/cuda:12.1.1-base` and builds a Docker image ready for
+execution.
+
 A small Flask based web interface exposes these features. The dashboard
 shows CPU and memory usage, counts running containers and links to their
 exposed ports. A repository registry allows adding or deleting

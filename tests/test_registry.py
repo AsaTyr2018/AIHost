@@ -1,9 +1,16 @@
 from __future__ import annotations
 
 from pathlib import Path
-import pytest
+import sys
 
-from aihost.registry import add_repo, delete_repo, list_repos, RepoInfo
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+import pytest  # noqa: E402
+from aihost.registry import (  # noqa: E402
+    add_repo,
+    delete_repo,
+    list_repos,
+    RepoInfo,
+)  # noqa: E402
 
 
 def test_registry(tmp_path: Path, monkeypatch):
