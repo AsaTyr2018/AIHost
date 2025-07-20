@@ -1,0 +1,5 @@
+# Runtime directories
+data/
+compose/
+__pycache__/
+*.pyc
