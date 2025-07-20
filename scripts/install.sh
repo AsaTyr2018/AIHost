@@ -63,6 +63,7 @@ After=network.target docker.service
 Type=simple
 WorkingDirectory=${APP_DIR}
 ExecStart=${APP_DIR}/venv/bin/python -m aihost.web
+Environment=PYTHONPATH=${APP_DIR}/src
 Restart=on-failure
 
 [Install]
