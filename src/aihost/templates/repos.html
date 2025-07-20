@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <title>Repository Registry</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/darkly/bootstrap.min.css">
 </head>
-<body class="container py-4">
+<body class="container py-4 bg-dark text-light">
   <h1 class="mb-4">Repository Registry</h1>
-  <form class="mb-3" method="post">
+  <form class="mb-3 rounded" method="post">
     <div class="mb-2">
       <input class="form-control" name="name" placeholder="Name" required />
     </div>
@@ -19,15 +19,20 @@
     </div>
     <button class="btn btn-primary">Add Repo</button>
   </form>
-  <table class="table">
-    <tr><th>Name</th><th>URL</th><th>Start Command</th><th></th></tr>
+  <table class="table table-dark table-striped rounded">
+    <tr><th>Name</th><th>URL</th><th>Start Command</th><th colspan="2"></th></tr>
     {% for r in repos %}
     <tr>
       <td>{{ r.name }}</td>
       <td>{{ r.url }}</td>
       <td>{{ r.start_command }}</td>
       <td>
-        <form method="post">
+        <form class="d-inline-block rounded" method="post">
+          <button class="btn btn-sm btn-secondary" name="install" value="{{ r.name }}">Install</button>
+        </form>
+      </td>
+      <td>
+        <form class="d-inline-block rounded" method="post">
           <button class="btn btn-sm btn-danger" name="delete" value="{{ r.name }}">Delete</button>
         </form>
       </td>

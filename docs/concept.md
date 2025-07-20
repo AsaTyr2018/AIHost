@@ -30,7 +30,8 @@ those repositories.
     image, copies the repo content, installs dependencies and sets the
     default command to the provided start command. This logic is
     implemented in the `aihost.builder` module which builds the Docker
-    image after cloning the repository.
+    image after cloning the repository. The web interface exposes this
+    functionality with an **Install** button on the repository page.
 
 4. **Container Management**
    - Docker Compose is used to orchestrate containers. Each registered
@@ -39,9 +40,10 @@ those repositories.
      service. Stopping uses `docker compose stop` or `down` as needed.
 
 5. **Web Interface**
-   - The web interface is minimal. It allows registration, listing and
-     actions (install, start, stop, remove). Status is displayed based
-     on Docker state.
+   - The web interface is minimal and styled with a dark theme and
+     rounded elements. It allows registration, installation, listing and
+     actions (start, stop, remove). Status is displayed based on Docker
+     state.
    - The application is built with Flask for rapid development, but
      this can be swapped out if needed.
 
