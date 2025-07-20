@@ -70,4 +70,18 @@ def rebuild_container(name: str, path: str) -> None:
     """
 
     client = _client()
-    client.images.build(path=path, tag=name.lower(), rm=True)
+    _, logs = client.images.build(
+        path=path,
+        tag=name.lower(),
+        rm=True,
+        decode=True,
+    )
+    for chunk in logs:
+        if "stream" in chunk:
+            line = chunk["stream"].strip()
+            if line:
+                print(line)
+        elif "status" in chunk:
+            print(chunk["status"].strip())
+        elif "error" in chunk:
+            print(chunk["error"].strip())

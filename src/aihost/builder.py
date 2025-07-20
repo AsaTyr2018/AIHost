@@ -55,9 +55,30 @@ CMD {start_command}
     dockerfile.write_text(content)
 
 
+def _print_build_logs(logs) -> None:
+    """Print Docker build output lines."""
+
+    for chunk in logs:
+        if "stream" in chunk:
+            line = chunk["stream"].strip()
+            if line:
+                print(line)
+        elif "status" in chunk:
+            status = chunk.get("status", "").strip()
+            progress = chunk.get("progress", "")
+            print(f"{status} {progress}".strip())
+        elif "error" in chunk:
+            print(chunk["error"].strip())
+
+
 def build_image(name: str, path: Path) -> None:
+    """Build the Docker image located at *path* and show progress."""
+
     client = _client()
-    client.images.build(path=str(path), tag=_normalize_tag(name), rm=True)
+    _, logs = client.images.build(
+        path=str(path), tag=_normalize_tag(name), rm=True, decode=True
+    )
+    _print_build_logs(logs)
 
 
 def install_repo(repo: RepoInfo, base_image: str = DEFAULT_BASE_IMAGE) -> None:
