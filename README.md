@@ -13,3 +13,8 @@ containers on the local Docker host. The manager lists container names
 along with exposed ports as clickable links and provides start, stop,
 rebuild and remove actions.
 
+A small Flask based web interface exposes these features. The dashboard
+shows CPU and memory usage, counts running containers and links to their
+exposed ports. A repository registry allows adding or deleting
+repositories while the container view offers start, stop, rebuild and
+remove controls.
