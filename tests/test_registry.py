@@ -14,7 +14,9 @@ def test_registry(tmp_path: Path, monkeypatch):
     repos = list_repos()
     assert repos == [
         RepoInfo(
-            name="repo1", url="https://example.com", start_command="run.sh"
+            name="repo1",
+            url="https://example.com",
+            start_command="run.sh",
         )
     ]
 
