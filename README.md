@@ -5,6 +5,9 @@ machine‑learning projects. Repositories are registered via a web
 interface, installed on demand and executed inside containers built from
 a default AI‑ready base image.
 
+**Note:** Docker image tags must be written in lowercase to satisfy the
+Docker daemon.
+
 The high level design is described in [docs/concept.md](docs/concept.md).
 See `AGENTS.md` for coding conventions and project structure.
 

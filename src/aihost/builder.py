@@ -8,6 +8,12 @@ import docker
 from .registry import RepoInfo
 
 
+def _normalize_tag(name: str) -> str:
+    """Return a Docker-compatible lowercase image tag."""
+
+    return name.lower()
+
+
 # Use a specific CUDA base image tag that exists on Docker Hub.
 # The previous tag `12.1.1-base` is invalid and caused build failures
 # because the manifest is missing. The `ubuntu20.04` variant is
@@ -37,7 +43,8 @@ def write_dockerfile(
     content = f"""FROM {base_image}
 WORKDIR /app
 COPY . /app
-RUN if [ -f {requirements_file} ]; then pip install -r {requirements_file}; fi  # noqa
+RUN apt-get update && apt-get install -y python3-pip && rm -rf /var/lib/apt/lists/*
+RUN if [ -f {requirements_file} ]; then pip3 install -r {requirements_file}; fi  # noqa
 CMD {start_command}
 """
     dockerfile.write_text(content)
@@ -45,7 +52,7 @@ CMD {start_command}
 
 def build_image(name: str, path: Path) -> None:
     client = _client()
-    client.images.build(path=str(path), tag=name, rm=True)
+    client.images.build(path=str(path), tag=_normalize_tag(name), rm=True)
 
 
 def install_repo(repo: RepoInfo, base_image: str = DEFAULT_BASE_IMAGE) -> None:

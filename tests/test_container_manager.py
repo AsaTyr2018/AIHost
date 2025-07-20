@@ -52,12 +52,12 @@ def test_start_stop_remove_rebuild():
         start_container("my_container")
         stop_container("my_container")
         remove_container("my_container")
-        rebuild_container("my_container", path=".")
+        rebuild_container("MyContainer", path=".")
 
     container.start.assert_called_once()
     container.stop.assert_called_once()
     container.remove.assert_called_once_with(force=True)
 
     client.images.build.assert_called_once_with(
-        path=".", tag="my_container", rm=True
+        path=".", tag="mycontainer", rm=True
     )  # noqa: E501
