@@ -15,6 +15,7 @@ def test_install_repo(tmp_path: Path, monkeypatch):
         name="myrepo",
         url="https://example.com/repo.git",
         start_command="python app.py",
+        requirements_file="reqs.txt",
     )
     monkeypatch.setattr(builder, "DATA_DIR", tmp_path)
 
@@ -39,6 +40,7 @@ def test_install_repo(tmp_path: Path, monkeypatch):
     text = dockerfile.read_text()
     assert builder.DEFAULT_BASE_IMAGE in text
     assert repo.start_command in text
+    assert "reqs.txt" in text
 
     client.images.build.assert_called_once_with(
         path=str(expected_dir), tag=repo.name, rm=True

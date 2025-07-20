@@ -48,6 +48,7 @@ def repos():
                 request.form["name"],
                 request.form["url"],
                 request.form["start_command"],
+                request.form.get("requirements_file", "requirements.txt"),
             )
         return redirect(url_for("repos"))
     return render_template("repos.html", repos=list_repos())
