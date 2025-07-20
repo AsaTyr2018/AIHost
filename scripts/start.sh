@@ -9,8 +9,6 @@ print_header() {
 }
 
 print_header
-read -p "Application path [${APP_DIR}]: " input_dir
-APP_DIR=${input_dir:-$APP_DIR}
 
 cd "$APP_DIR"
 BRANCH=$(git rev-parse --abbrev-ref HEAD)

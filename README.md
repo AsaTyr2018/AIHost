@@ -23,6 +23,6 @@ remove controls.
 
 Run `scripts/install.sh` to install AIHost into `/opt/AIHost` (or a custom path). The installer creates a Python virtual environment, installs dependencies and optionally registers a `systemd` service.
 
-Start the application with `scripts/start.sh`. The starter checks the repository for updates before launching the web server and automatically sets `PYTHONPATH` so the `aihost` package can be found.
+Start the application with `scripts/start.sh`. The starter checks the repository for updates before launching the web server and automatically sets `PYTHONPATH` so the `aihost` package can be found. It no longer prompts for the installation path and instead uses `/opt/AIHost` by default. The web server listens on all interfaces (`0.0.0.0`) so it can be reached from other hosts.
 
-To update an existing installation run `scripts/update.sh`. It performs `git pull`, installs new dependencies if needed and restarts the service when installed.
+To update an existing installation run `scripts/update.sh`. It performs `git pull`, installs new dependencies if needed and restarts the service when installed. Like the starter script, it assumes the default path `/opt/AIHost` without asking.
