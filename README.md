@@ -17,7 +17,7 @@ repository and build its container image.
 
 The `aihost.builder` module handles installation of repositories. It
 clones the specified Git repository, generates a Dockerfile based on the
-CUDA image `nvidia/cuda:12.1.1-base` and builds a Docker image ready for
+CUDA image `nvidia/cuda:12.1.1-base-ubuntu20.04` and builds a Docker image ready for
 execution.
 
 A small Flask based web interface exposes these features. The interface
