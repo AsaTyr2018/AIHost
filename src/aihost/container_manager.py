@@ -34,7 +34,7 @@ def list_containers() -> List[ContainerInfo]:
             for mapping in mappings:
                 host_port = mapping.get("HostPort")
                 if host_port:
-                    ports.append(f"http://localhost:{host_port}")
+                    ports.append(f"http://localhost:{host_port}")  # noqa: E231
         containers.append(ContainerInfo(name=container.name, ports=ports))
     return containers
 
