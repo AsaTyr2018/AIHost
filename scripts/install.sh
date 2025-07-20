@@ -17,6 +17,21 @@ APP_DIR=${input_dir:-$APP_DIR}
 read -p "Repository URL [${REPO_URL}]: " input_repo
 REPO_URL=${input_repo:-$REPO_URL}
 
+# Ensure the repository URL uses HTTPS in case a git@ or ssh URL was provided
+convert_to_https() {
+    local url=$1
+    if [[ $url =~ ^git@([^:]+):(.+)$ ]]; then
+        printf "https://%s/%s" "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}"
+    elif [[ $url =~ ^ssh://git@([^/]+)/(.+)$ ]]; then
+        printf "https://%s/%s" "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}"
+    else
+        printf "%s" "$url"
+    fi
+}
+
+# Convert possible SSH style repo URLs to HTTPS
+REPO_URL=$(convert_to_https "$REPO_URL")
+
 printf '\033[1;34mCloning repository...\033[0m\n'
 mkdir -p "$APP_DIR"
 if [ -d "$APP_DIR/.git" ]; then
