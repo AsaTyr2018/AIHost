@@ -30,4 +30,4 @@ if [ "$updates" -gt 0 ]; then
 fi
 
 printf '\033[1;34mStarting AIHost...\033[0m\n'
-"$APP_DIR/venv/bin/python" -m aihost.web
+PYTHONPATH="$APP_DIR/src" "$APP_DIR/venv/bin/python" -m aihost.web
