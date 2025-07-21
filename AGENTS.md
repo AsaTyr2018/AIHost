@@ -7,10 +7,18 @@ should follow these conventions when modifying or adding code.
 
 - `src/` contains the Python sources for the web interface and service
   logic. Use packages under `src/aihost/`.
-- `data/` is created at runtime for cloned repositories. It should not
-  be tracked by git.
-- `compose/` stores generated Docker Compose files and Dockerfiles.
+- `data/` holds runtime data such as cloned repositories or persistent
+  volumes. It should not be tracked by git.
+- `compose/` contains one subdirectory per application. Each subdirectory
+  includes a `docker-compose.yml` used to run that application.
 - `docs/` stores design and concept documentation.
+
+## Application Detection
+
+AIHost scans the `compose/` directory for subfolders containing a
+`docker-compose.yml`. The name of each subfolder is treated as the
+application identifier. The backend uses these files when running Docker
+Compose commands and no manual repository registration is required.
 
 ## Coding Standards
 

@@ -1,9 +1,10 @@
 # AIHost
 
-AIHost aims to be a simple, automated Docker manager for running
-machine‑learning projects. Repositories are registered via a web
-interface, installed on demand and executed inside containers built from
-a default AI‑ready base image.
+AIHost acts as a lightweight Docker Compose manager for various
+machine‑learning applications. Docker images are built manually outside
+the system and pushed to a Docker Hub repository. Each application
+stores its Compose configuration under `compose/<app>/docker-compose.yml`
+along with any persistent data.
 
 **Note:** Docker image tags must be written in lowercase to satisfy the
 Docker daemon.
@@ -11,28 +12,22 @@ Docker daemon.
 The high level design is described in [docs/concept.md](docs/concept.md).
 See `AGENTS.md` for coding conventions and project structure.
 
-The project includes a minimal container manager able to discover
-containers on the local Docker host. The manager lists container names
-along with exposed ports as clickable links and provides start, stop,
-rebuild and remove actions. The repository registry page now also offers
-an **Install** button which triggers the Docker builder to clone the
-repository and build its container image. When adding a repository the
-form accepts a custom requirements file name in case the project does
-not use the default `requirements.txt`.
+The application automatically detects available apps by scanning the
+`compose/` directory for subfolders that contain a `docker-compose.yml`
+file. The folder name becomes the application name. The web interface
+lists detected apps with controls to start, stop or rebuild them using
+`docker compose` commands executed in the respective folder. No manual
+repository registration or image building is performed by AIHost.
 
-The `aihost.builder` module handles installation of repositories. It
-clones the specified Git repository, generates a Dockerfile based on
-the CUDA image `nvidia/cuda:12.1.1-base-ubuntu20.04` and builds a Docker image
-ready for execution.
-Build logs are streamed to the console so progress is visible during
-installation or container rebuilds.
+With images prepared ahead of time there is no in-place build step.
+Compose folders serve as the central storage location for each app and
+may include volume directories referenced by the compose file.
 
 A small Flask based web interface exposes these features. The interface
 uses a dark theme with rounded elements. The dashboard shows CPU and
 memory usage, counts running containers and links to their exposed
-ports. A repository registry allows adding or deleting repositories,
-installing them via the Docker builder and the container view offers
-start, stop, rebuild and remove controls.
+ports. Detected applications are listed with start, stop, rebuild and
+remove controls executed through Docker Compose.
 
 ## Installation and Usage
 
