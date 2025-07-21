@@ -6,7 +6,9 @@ from typing import List
 import subprocess
 import docker
 
-COMPOSE_DIR = Path("compose")
+# Resolve compose directory relative to the package root so the path does not
+# depend on the current working directory.
+COMPOSE_DIR = Path(__file__).resolve().parents[2] / "compose"
 
 
 @dataclass
