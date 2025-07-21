@@ -9,6 +9,7 @@ import docker
 # Resolve compose directory relative to the package root so the path does not
 # depend on the current working directory.
 COMPOSE_DIR = Path(__file__).resolve().parents[2] / "compose"
+LOGS_DIR = Path(__file__).resolve().parents[2] / "data" / "logs"
 
 
 @dataclass
@@ -94,8 +95,59 @@ def deinstall_app(app: str) -> None:
     _compose(app, "down", "-v")
 
 
+def install_app_async(app: str) -> None:
+    """Install an application without blocking the caller."""
+
+    LOGS_DIR.mkdir(parents=True, exist_ok=True)
+    log_file = LOGS_DIR / f"{app}.log"
+    compose_file = COMPOSE_DIR / app / "docker-compose.yml"
+    cmd = ["docker", "compose", "-f", str(compose_file), "up", "-d"]
+
+    with open(log_file, "w") as f:
+        subprocess.Popen(
+            cmd, cwd=compose_file.parent, stdout=f, stderr=subprocess.STDOUT
+        )
+
+
+def deinstall_app_async(app: str) -> None:
+    """Deinstall an application without blocking the caller."""
+
+    LOGS_DIR.mkdir(parents=True, exist_ok=True)
+    log_file = LOGS_DIR / f"{app}.log"
+    compose_file = COMPOSE_DIR / app / "docker-compose.yml"
+    cmd = ["docker", "compose", "-f", str(compose_file), "down", "-v"]
+
+    with open(log_file, "w") as f:
+        subprocess.Popen(
+            cmd, cwd=compose_file.parent, stdout=f, stderr=subprocess.STDOUT
+        )
+
+
 def rebuild_container(app: str) -> None:
     """Rebuild a running container's image and recreate it."""
 
     _compose(app, "pull")
     _compose(app, "up", "-d", "--force-recreate")
+
+
+def get_app_logs(app: str, lines: int = 50) -> str:
+    """Return the recent logs for *app* using docker compose."""
+
+    compose_file = COMPOSE_DIR / app / "docker-compose.yml"
+    if not compose_file.exists():
+        raise FileNotFoundError(compose_file)
+
+    cmd = [
+        "docker",
+        "compose",
+        "-f",
+        str(compose_file),
+        "logs",
+        "--no-color",
+        "--tail",
+        str(lines),
+    ]
+    output = subprocess.check_output(
+        cmd, cwd=compose_file.parent, text=True, stderr=subprocess.STDOUT
+    )
+    return output

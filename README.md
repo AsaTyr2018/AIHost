@@ -32,7 +32,8 @@ memory usage and, when available, GPU statistics such as VRAM
 utilization. It also counts running containers and links to their exposed
 ports. Detected apps are presented in the AppStore with install and
 deinstall controls, while running containers offer start, stop and
-rebuild buttons.
+rebuild buttons. Each app entry also includes a **Log/Status** link that opens
+the most recent container logs in a separate window.
 
 ## Installation and Usage
 

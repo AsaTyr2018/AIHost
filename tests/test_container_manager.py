@@ -15,6 +15,8 @@ from aihost.container_manager import (  # noqa: E402
     rebuild_container,
     install_app,
     deinstall_app,
+    get_app_logs,
+    install_app_async,
 )
 
 
@@ -142,3 +144,53 @@ def test_rebuild_container(tmp_path: Path, monkeypatch):
             expected_cwd,
         ),
     ]
+
+
+def test_get_app_logs(tmp_path: Path, monkeypatch):
+    app_dir = tmp_path / "app"
+    app_dir.mkdir(parents=True)
+    compose_file = app_dir / "docker-compose.yml"
+    compose_file.write_text("version: '3'")
+
+    monkeypatch.setattr("aihost.container_manager.COMPOSE_DIR", tmp_path)
+
+    def fake_output(cmd, cwd=None, text=None, stderr=None):
+        assert cwd == compose_file.parent
+        return "logs"
+
+    monkeypatch.setattr(
+        "aihost.container_manager.subprocess.check_output",
+        fake_output,
+    )
+
+    logs = get_app_logs("app", lines=10)
+    assert logs == "logs"
+
+
+def test_install_app_async(tmp_path: Path, monkeypatch):
+    app_dir = tmp_path / "app"
+    app_dir.mkdir(parents=True)
+    compose_file = app_dir / "docker-compose.yml"
+    compose_file.write_text("version: '3'")
+
+    monkeypatch.setattr("aihost.container_manager.COMPOSE_DIR", tmp_path)
+    monkeypatch.setattr("aihost.container_manager.LOGS_DIR", tmp_path / "logs")
+
+    calls = []
+
+    class DummyProc:
+        pass
+
+    def fake_popen(cmd, cwd=None, stdout=None, stderr=None):
+        calls.append((cmd, cwd))
+        return DummyProc()
+
+    monkeypatch.setattr(
+        "aihost.container_manager.subprocess.Popen",
+        fake_popen,
+    )
+
+    install_app_async("app")
+
+    expected_cmd = ["docker", "compose", "-f", str(compose_file), "up", "-d"]
+    assert calls == [(expected_cmd, compose_file.parent)]
