@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import List
-
+import subprocess
 import docker
+
+COMPOSE_DIR = Path("compose")
 
 
 @dataclass
@@ -28,62 +31,50 @@ def list_containers() -> List[ContainerInfo]:
     for container in client.containers.list(all=True):
         ports = []
         port_info = container.attrs.get("NetworkSettings", {}).get("Ports", {})
-        for container_port, mappings in port_info.items():
+        for mappings in port_info.values():
             if not mappings:
                 continue
             for mapping in mappings:
                 host_port = mapping.get("HostPort")
                 if host_port:
-                    ports.append(f"http://localhost:{host_port}")  # noqa: E231
+                    ports.append(f"http://localhost:{host_port}")
         containers.append(ContainerInfo(name=container.name, ports=ports))
     return containers
 
 
-def start_container(name: str) -> None:
-    """Start a container by name."""
+def list_apps() -> List[str]:
+    """Return names of available applications."""
 
-    client = _client()
-    container = client.containers.get(name)
-    container.start()
-
-
-def stop_container(name: str) -> None:
-    """Stop a container by name."""
-
-    client = _client()
-    container = client.containers.get(name)
-    container.stop()
+    apps: List[str] = []
+    if not COMPOSE_DIR.exists():
+        return apps
+    for child in COMPOSE_DIR.iterdir():
+        if child.is_dir() and (child / "docker-compose.yml").exists():
+            apps.append(child.name)
+    return sorted(apps)
 
 
-def remove_container(name: str) -> None:
-    """Remove a container by name."""
+def _compose(app: str, *args: str) -> None:
+    """Run a docker compose command for *app* with *args*."""
 
-    client = _client()
-    container = client.containers.get(name)
-    container.remove(force=True)
+    compose_file = COMPOSE_DIR / app / "docker-compose.yml"
+    if not compose_file.exists():
+        raise FileNotFoundError(compose_file)
+    cmd = ["docker", "compose", "-f", str(compose_file)] + list(args)
+    subprocess.check_call(cmd, cwd=compose_file.parent)
 
 
-def rebuild_container(name: str, path: str) -> None:
-    """Rebuild the Docker image of a container.
+def start_app(app: str) -> None:
+    _compose(app, "up", "-d")
 
-    The build context is provided by *path*.
-    """
 
-    client = _client()
-    # Disable docker-py decoding so that build output is handled
-    # consistently as dictionaries.
-    _, logs = client.images.build(
-        path=path,
-        tag=name.lower(),
-        rm=True,
-        decode=False,
-    )
-    for chunk in logs:
-        if "stream" in chunk:
-            line = chunk["stream"].strip()
-            if line:
-                print(line)
-        elif "status" in chunk:
-            print(chunk["status"].strip())
-        elif "error" in chunk:
-            print(chunk["error"].strip())
+def stop_app(app: str) -> None:
+    _compose(app, "stop")
+
+
+def remove_app(app: str) -> None:
+    _compose(app, "down")
+
+
+def rebuild_app(app: str) -> None:
+    _compose(app, "build", "--no-cache")

@@ -1,71 +1,39 @@
 # AIHost Project Concept
 
-AIHost is intended as a lightweight web-based manager for deploying
-and running machine learning projects inside Docker containers. The
-key idea is to register GitHub repositories, provide configuration for
-starting them, and automatically build and run containers based on
-those repositories.
+AIHost provides a small web interface to manage machine learning
+applications defined through Docker Compose. Each application lives in a
+subdirectory under `compose/` that contains a `docker-compose.yml`
+file. The folder name becomes the application identifier.
+
+Docker images are built outside of AIHost and published to a registry.
+AIHost does not clone repositories or build images locally. Instead the
+web interface exposes controls to run `docker compose` commands in the
+corresponding application folder.
 
 ## Core Features
 
-1. **Repository Registration**
-   - Users register a GitHub repository through the web interface.
-   - They specify a friendly name, repository URL and a start command.
-   - The start command is used by Docker Compose when launching the
-     container.
+1. **Application Detection**
+   - At startup the backend scans the `compose/` directory for
+     subfolders containing a `docker-compose.yml`.
+   - The detected folders are presented in the UI as available
+     applications.
 
-2. **Repository Listing**
-   - After registration, repositories are listed with their status:
-     uninstalled, installed or running.
-   - Users can install or start/stop the container from the list.
+2. **Application Management**
+   - Users can start, stop, rebuild or remove an application. These
+     actions simply invoke `docker compose` within the application's
+     folder.
+   - Container status and exposed ports are retrieved from the Docker
+     daemon and displayed on the dashboard.
 
-3. **Installation Process**
-   - On install the system performs `git clone` into a managed
-     directory.
-   - If the repository contains a requirements file (defaults to
-     `requirements.txt` but can be specified in the web form), the
-     container is built using a base image with GPU/AI support. This
-    default base image is configurable but typically something like
-    `nvidia/cuda:12.1.1-base-ubuntu20.04` with Python included.
-  - The install process writes a simple Dockerfile using the base
-    image, copies the repo content, installs dependencies and sets the
-    default command to the provided start command. This logic is
-    implemented in the `aihost.builder` module which builds the Docker
-    image after cloning the repository. The web interface exposes this
-    functionality with an **Install** button on the repository page.
-  - Docker image tags are normalised to lowercase so builds succeed on
-    all Docker hosts.
-
-4. **Container Management**
-   - Docker Compose is used to orchestrate containers. Each registered
-     repository maps to a service in the main `docker-compose.yaml`.
-   - Starting a container results in `docker compose up` for that
-     service. Stopping uses `docker compose stop` or `down` as needed.
-
-5. **Web Interface**
-   - The web interface is minimal and styled with a dark theme and
-     rounded elements. It allows registration, installation, listing and
-     actions (start, stop, remove). Status is displayed based on Docker
-     state.
-   - The application is built with Flask for rapid development, but
-     this can be swapped out if needed.
-
-
-## Container Manager
-
-After containers are built, AIHost detects them from the Docker host and lists them in the interface. Each listed container shows its name and any exposed ports as clickable links. Users can start, stop, rebuild or remove containers directly from the list.
+3. **Web Interface**
+   - Implemented with Flask and styled using a dark theme.
+   - Shows CPU and memory usage alongside the list of containers and
+     available applications.
 
 ## Directory Layout
 
 - `src/` – Web server and service logic.
-- `data/` – Cloned repositories live here.
-- `compose/` – Generated Docker Compose and Dockerfiles.
+- `compose/` – One subdirectory per application containing a
+  `docker-compose.yml` and optional persistent data.
 - `docs/` – Project documentation.
-
-## Next Steps
-
-1. Implement the registration form and list view.
-2. Implement install logic: clone repo, generate Dockerfile, add
-   service entry to compose file.
-3. Provide start/stop control using docker-compose.
 
