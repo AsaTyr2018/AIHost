@@ -25,7 +25,8 @@ may include volume directories referenced by the compose file.
 
 A small Flask based web interface exposes these features. The interface
 uses a dark theme with rounded elements. The dashboard shows CPU and
-memory usage, counts running containers and links to their exposed
+memory usage and, when available, GPU statistics such as VRAM
+utilization. It also counts running containers and links to their exposed
 ports. Detected applications are listed with start, stop, rebuild and
 remove controls executed through Docker Compose.
 

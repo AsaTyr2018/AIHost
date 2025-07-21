@@ -27,8 +27,8 @@ corresponding application folder.
 
 3. **Web Interface**
    - Implemented with Flask and styled using a dark theme.
-   - Shows CPU and memory usage alongside the list of containers and
-     available applications.
+  - Shows CPU and memory usage alongside GPU statistics when
+    available, plus the list of containers and available applications.
 
 ## Directory Layout
 
