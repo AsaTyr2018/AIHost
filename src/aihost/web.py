@@ -20,6 +20,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def dashboard():
+    active_tab = request.args.get("tab", "containers")
     cpu_percent = psutil.cpu_percent()
     mem_percent = psutil.virtual_memory().percent
     gpu = get_gpu_stats()
@@ -36,6 +37,7 @@ def dashboard():
         apps=apps,
         total_containers=total_containers,
         running=running,
+        active_tab=active_tab,
     )
 
 

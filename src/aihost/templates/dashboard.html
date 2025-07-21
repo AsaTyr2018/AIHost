@@ -16,6 +16,14 @@
 </head>
 <body class="container py-4 bg-dark text-light">
   <h1 class="mb-4">AIHost Dashboard</h1>
+  <ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+      <a class="nav-link {% if active_tab == 'containers' %}active{% endif %}" href="{{ url_for('dashboard', tab='containers') }}">Containers</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if active_tab == 'appstore' %}active{% endif %}" href="{{ url_for('dashboard', tab='appstore') }}">AppStore</a>
+    </li>
+  </ul>
   <div class="row">
     <div class="col-md-4">
       <h2>Server Stats</h2>
@@ -30,8 +38,9 @@
       <p>Containers: {{ running }} / {{ total_containers }}</p>
     </div>
     <div class="col-md-8">
-      <h2>Containers</h2>
-      <table class="table table-dark table-striped rounded">
+      <div class="{% if active_tab != 'containers' %}d-none{% endif %}">
+        <h2>Containers</h2>
+        <table class="table table-dark table-striped rounded">
         <tr><th>Name</th><th>Ports</th><th>Actions</th></tr>
         {% for c in containers %}
         <tr>
@@ -51,9 +60,11 @@
           </td>
         </tr>
         {% endfor %}
-      </table>
-      <h2>Applications</h2>
-      <table class="table table-dark table-striped rounded">
+        </table>
+      </div>
+      <div class="{% if active_tab != 'appstore' %}d-none{% endif %}">
+        <h2>AppStore</h2>
+        <table class="table table-dark table-striped rounded">
         <tr><th>Name</th><th>Actions</th></tr>
         {% for a in apps %}
         <tr>
@@ -67,7 +78,8 @@
           </td>
         </tr>
         {% endfor %}
-      </table>
+        </table>
+      </div>
     </div>
   </div>
 </body>
