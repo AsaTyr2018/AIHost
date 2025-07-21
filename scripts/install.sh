@@ -17,6 +17,26 @@ APP_DIR=${input_dir:-$APP_DIR}
 read -p "Repository URL [${REPO_URL}]: " input_repo
 REPO_URL=${input_repo:-$REPO_URL}
 
+# Check and install required apt packages
+check_apt_package() {
+    local pkg=$1
+    if ! dpkg -s "$pkg" >/dev/null 2>&1; then
+        printf '\033[1;34mInstalling %s...\033[0m\n' "$pkg"
+        sudo apt-get update
+        sudo apt-get install -y "$pkg"
+    fi
+}
+
+ensure_system_dependencies() {
+    if command -v apt-get >/dev/null 2>&1; then
+        local ver
+        ver=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
+        check_apt_package "python${ver}-venv"
+    fi
+}
+
+ensure_system_dependencies
+
 # Ensure the repository URL uses HTTPS in case a git@ or ssh URL was provided
 convert_to_https() {
     local url=$1
