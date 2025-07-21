@@ -26,7 +26,7 @@
     <div class="col-md-8">
       <h2>Containers</h2>
       <table class="table table-dark table-striped rounded">
-        <tr><th>Name</th><th>Ports</th><th>Actions</th></tr>
+        <tr><th>Name</th><th>Ports</th></tr>
         {% for c in containers %}
         <tr>
           <td>{{ c.name }}</td>
@@ -35,9 +35,18 @@
               <a href="{{ p }}">{{ p }}</a>
             {% endfor %}
           </td>
+        </tr>
+        {% endfor %}
+      </table>
+      <h2>Applications</h2>
+      <table class="table table-dark table-striped rounded">
+        <tr><th>Name</th><th>Actions</th></tr>
+        {% for a in apps %}
+        <tr>
+          <td>{{ a }}</td>
           <td>
-            <form class="d-inline-block rounded" method="post" action="{{ url_for('containers_action') }}">
-              <input type="hidden" name="name" value="{{ c.name }}" />
+            <form class="d-inline-block rounded" method="post" action="{{ url_for('apps_action') }}">
+              <input type="hidden" name="name" value="{{ a }}" />
               <button class="btn btn-sm btn-success" name="action" value="start">Start</button>
               <button class="btn btn-sm btn-warning" name="action" value="stop">Stop</button>
               <button class="btn btn-sm btn-info" name="action" value="rebuild">Rebuild</button>
@@ -49,6 +58,5 @@
       </table>
     </div>
   </div>
-  <a href="{{ url_for('repos') }}">Manage Repositories</a>
 </body>
 </html>

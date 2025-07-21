@@ -5,14 +5,12 @@ import psutil
 
 from .container_manager import (
     list_containers,
-    start_container,
-    stop_container,
-    rebuild_container,
-    remove_container,
+    list_apps,
+    start_app,
+    stop_app,
+    rebuild_app,
+    remove_app,
 )
-from .registry import list_repos, add_repo, delete_repo
-from .builder import install_repo
-
 
 app = Flask(__name__)
 
@@ -22,6 +20,7 @@ def dashboard():
     cpu_percent = psutil.cpu_percent()
     mem_percent = psutil.virtual_memory().percent
     containers = list_containers()
+    apps = list_apps()
     total_containers = len(containers)
     running = sum(1 for c in containers if c.ports)
     return render_template(
@@ -29,43 +28,24 @@ def dashboard():
         cpu_percent=cpu_percent,
         mem_percent=mem_percent,
         containers=containers,
+        apps=apps,
         total_containers=total_containers,
         running=running,
     )
 
 
-@app.route("/repos", methods=["GET", "POST"])
-def repos():
-    if request.method == "POST":
-        if "delete" in request.form:
-            delete_repo(request.form["delete"])
-        elif "install" in request.form:
-            name = request.form["install"]
-            repo = next(r for r in list_repos() if r.name == name)
-            install_repo(repo)
-        else:
-            add_repo(
-                request.form["name"],
-                request.form["url"],
-                request.form["start_command"],
-                request.form.get("requirements_file", "requirements.txt"),
-            )
-        return redirect(url_for("repos"))
-    return render_template("repos.html", repos=list_repos())
-
-
-@app.route("/containers", methods=["POST"])
-def containers_action():
+@app.route("/apps", methods=["POST"])
+def apps_action():
     name = request.form["name"]
     action = request.form["action"]
     if action == "start":
-        start_container(name)
+        start_app(name)
     elif action == "stop":
-        stop_container(name)
+        stop_app(name)
     elif action == "rebuild":
-        rebuild_container(name, path=".")
+        rebuild_app(name)
     elif action == "remove":
-        remove_container(name)
+        remove_app(name)
     return redirect(url_for("dashboard"))
 
 
