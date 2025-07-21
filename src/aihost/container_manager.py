@@ -66,17 +66,36 @@ def _compose(app: str, *args: str) -> None:
     subprocess.check_call(cmd, cwd=compose_file.parent)
 
 
-def start_app(app: str) -> None:
+def start_container(name: str) -> None:
+    """Start an existing container by name."""
+
+    client = _client()
+    container = client.containers.get(name)
+    container.start()
+
+
+def stop_container(name: str) -> None:
+    """Stop a running container."""
+
+    client = _client()
+    container = client.containers.get(name)
+    container.stop()
+
+
+def install_app(app: str) -> None:
+    """Install an application using docker compose."""
+
     _compose(app, "up", "-d")
 
 
-def stop_app(app: str) -> None:
-    _compose(app, "stop")
+def deinstall_app(app: str) -> None:
+    """Remove an application and its data."""
+
+    _compose(app, "down", "-v")
 
 
-def remove_app(app: str) -> None:
-    _compose(app, "down")
+def rebuild_container(app: str) -> None:
+    """Rebuild a running container's image and recreate it."""
 
-
-def rebuild_app(app: str) -> None:
-    _compose(app, "build", "--no-cache")
+    _compose(app, "pull")
+    _compose(app, "up", "-d", "--force-recreate")
