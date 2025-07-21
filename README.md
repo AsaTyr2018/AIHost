@@ -32,7 +32,7 @@ remove controls executed through Docker Compose.
 
 ## Installation and Usage
 
-Run `scripts/install.sh` to install AIHost into `/opt/AIHost` (or a custom path). The installer creates a Python virtual environment, installs dependencies and optionally registers a `systemd` service.
+Run `scripts/install.sh` to install AIHost into `/opt/AIHost` (or a custom path). The installer checks for required apt packages such as `python3-venv`, creates a Python virtual environment, installs dependencies and optionally registers a `systemd` service.
 
 Start the application with `scripts/start.sh`. The starter checks the repository for updates before launching the web server and automatically sets `PYTHONPATH` so the `aihost` package can be found. It no longer prompts for the installation path and instead uses `/opt/AIHost` by default. The web server listens on all interfaces (`0.0.0.0`) so it can be reached from other hosts.
 
