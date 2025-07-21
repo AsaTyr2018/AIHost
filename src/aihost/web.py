@@ -3,6 +3,8 @@ from __future__ import annotations
 from flask import Flask, render_template, request, redirect, url_for
 import psutil
 
+from .gpu import get_gpu_stats
+
 from .container_manager import (
     list_containers,
     list_apps,
@@ -19,6 +21,7 @@ app = Flask(__name__)
 def dashboard():
     cpu_percent = psutil.cpu_percent()
     mem_percent = psutil.virtual_memory().percent
+    gpu = get_gpu_stats()
     containers = list_containers()
     apps = list_apps()
     total_containers = len(containers)
@@ -27,6 +30,7 @@ def dashboard():
         "dashboard.html",
         cpu_percent=cpu_percent,
         mem_percent=mem_percent,
+        gpu=gpu,
         containers=containers,
         apps=apps,
         total_containers=total_containers,

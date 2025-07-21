@@ -21,6 +21,12 @@
       <h2>Server Stats</h2>
       <p>CPU Usage: {{ cpu_percent }}%</p>
       <p>Memory Usage: {{ mem_percent }}%</p>
+      {% if gpu %}
+      <p>GPU: {{ gpu.name }}</p>
+      <p>VRAM: {{ gpu.memory_used }}MB / {{ gpu.memory_total }}MB ({{ gpu.memory_percent }}%)</p>
+      {% else %}
+      <p>GPU: N/A</p>
+      {% endif %}
       <p>Containers: {{ running }} / {{ total_containers }}</p>
     </div>
     <div class="col-md-8">
