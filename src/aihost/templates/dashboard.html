@@ -75,6 +75,7 @@
               <button class="btn btn-sm btn-success" name="action" value="install">Install</button>
               <button class="btn btn-sm btn-danger" name="action" value="deinstall">Deinstall</button>
             </form>
+            <a class="btn btn-sm btn-secondary" href="{{ url_for('app_logs', app=a) }}" target="_blank">Log/Status</a>
           </td>
         </tr>
         {% endfor %}

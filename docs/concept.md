@@ -28,10 +28,12 @@ corresponding application folder.
      daemon and displayed on the dashboard.
 
 3. **Web Interface**
-   - Implemented with Flask and styled using a dark theme.
+  - Implemented with Flask and styled using a dark theme.
   - Shows CPU and memory usage alongside GPU statistics when
     available, plus the list of containers and available apps. The
     applications are presented in an **AppStore** tab.
+  - Each app entry provides a *Log/Status* button that opens the recent
+    container logs in a new window.
 
 ## Directory Layout
 

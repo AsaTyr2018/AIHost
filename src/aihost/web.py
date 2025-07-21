@@ -11,8 +11,9 @@ from .container_manager import (
     start_container,
     stop_container,
     rebuild_container,
-    install_app,
-    deinstall_app,
+    install_app_async,
+    deinstall_app_async,
+    get_app_logs,
 )
 
 app = Flask(__name__)
@@ -59,10 +60,18 @@ def apps_action():
     name = request.form["name"]
     action = request.form["action"]
     if action == "install":
-        install_app(name)
+        install_app_async(name)
     elif action == "deinstall":
-        deinstall_app(name)
+        deinstall_app_async(name)
     return redirect(url_for("dashboard"))
+
+
+@app.route("/logs/<app>")
+def app_logs(app: str):
+    """Display recent logs for *app*."""
+
+    logs = get_app_logs(app)
+    return render_template("logs.html", app=app, logs=logs)
 
 
 if __name__ == "__main__":
