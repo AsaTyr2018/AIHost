@@ -22,7 +22,7 @@ corresponding application folder.
    - Running containers can be started, stopped or rebuilt. Rebuilding
      pulls updated images and recreates the container using Docker
      Compose.
-   - Applications that are not yet installed can be installed or
+   - Apps that are not yet installed can be installed or
      deinstalled via `docker compose` in the corresponding folder.
    - Container status and exposed ports are retrieved from the Docker
      daemon and displayed on the dashboard.
@@ -30,7 +30,8 @@ corresponding application folder.
 3. **Web Interface**
    - Implemented with Flask and styled using a dark theme.
   - Shows CPU and memory usage alongside GPU statistics when
-    available, plus the list of containers and available applications.
+    available, plus the list of containers and available apps. The
+    applications are presented in an **AppStore** tab.
 
 ## Directory Layout
 
