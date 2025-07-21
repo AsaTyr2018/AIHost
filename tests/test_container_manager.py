@@ -10,10 +10,11 @@ from aihost.container_manager import (  # noqa: E402
     ContainerInfo,
     list_containers,
     list_apps,
-    start_app,
-    stop_app,
-    rebuild_app,
-    remove_app,
+    start_container,
+    stop_container,
+    rebuild_container,
+    install_app,
+    deinstall_app,
 )
 
 
@@ -24,13 +25,13 @@ class DummyContainer:
     def __init__(self) -> None:
         self.start = MagicMock()
         self.stop = MagicMock()
-        self.remove = MagicMock()
 
 
 def test_list_containers(monkeypatch):
     container = DummyContainer()
     client = MagicMock()
     client.containers.list.return_value = [container]
+    client.containers.get.return_value = container
     monkeypatch.setattr(
         "aihost.container_manager.docker.from_env",
         lambda: client,
@@ -41,6 +42,22 @@ def test_list_containers(monkeypatch):
     assert result == [
         ContainerInfo(name="my_container", ports=["http://localhost:8080"])
     ]
+
+
+def test_container_actions(monkeypatch):
+    container = DummyContainer()
+    client = MagicMock()
+    client.containers.get.return_value = container
+    monkeypatch.setattr(
+        "aihost.container_manager.docker.from_env",
+        lambda: client,
+    )
+
+    start_container("my_container")
+    stop_container("my_container")
+
+    assert container.start.called
+    assert container.stop.called
 
 
 def test_list_apps(tmp_path: Path, monkeypatch):
@@ -55,7 +72,7 @@ def test_list_apps(tmp_path: Path, monkeypatch):
     assert apps == ["app1", "app2"]
 
 
-def test_compose_actions(tmp_path: Path, monkeypatch):
+def test_app_actions(tmp_path: Path, monkeypatch):
     app_dir = tmp_path / "app"
     app_dir.mkdir(parents=True)
     compose_file = app_dir / "docker-compose.yml"
@@ -73,10 +90,8 @@ def test_compose_actions(tmp_path: Path, monkeypatch):
         fake_call,
     )
 
-    start_app("app")
-    stop_app("app")
-    rebuild_app("app")
-    remove_app("app")
+    install_app("app")
+    deinstall_app("app")
 
     expected_cwd = compose_file.parent
     assert calls == [
@@ -85,19 +100,45 @@ def test_compose_actions(tmp_path: Path, monkeypatch):
             expected_cwd,
         ),
         (
-            ["docker", "compose", "-f", str(compose_file), "stop"],
+            ["docker", "compose", "-f", str(compose_file), "down", "-v"],
             expected_cwd,
         ),
+    ]
+
+
+def test_rebuild_container(tmp_path: Path, monkeypatch):
+    app_dir = tmp_path / "app"
+    app_dir.mkdir(parents=True)
+    compose_file = app_dir / "docker-compose.yml"
+    compose_file.write_text("version: '3'")
+
+    monkeypatch.setattr("aihost.container_manager.COMPOSE_DIR", tmp_path)
+
+    calls = []
+
+    def fake_call(cmd, cwd=None):
+        calls.append((cmd, cwd))
+
+    monkeypatch.setattr(
+        "aihost.container_manager.subprocess.check_call",
+        fake_call,
+    )
+
+    rebuild_container("app")
+
+    expected_cwd = compose_file.parent
+    assert calls == [
+        (["docker", "compose", "-f", str(compose_file), "pull"], expected_cwd),
         (
             [
                 "docker",
                 "compose",
                 "-f",
                 str(compose_file),
-                "build",
-                "--no-cache",
+                "up",
+                "-d",
+                "--force-recreate",
             ],
             expected_cwd,
         ),
-        (["docker", "compose", "-f", str(compose_file), "down"], expected_cwd),
     ]

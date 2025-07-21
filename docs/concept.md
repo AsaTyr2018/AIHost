@@ -19,9 +19,11 @@ corresponding application folder.
      applications.
 
 2. **Application Management**
-   - Users can start, stop, rebuild or remove an application. These
-     actions simply invoke `docker compose` within the application's
-     folder.
+   - Running containers can be started, stopped or rebuilt. Rebuilding
+     pulls updated images and recreates the container using Docker
+     Compose.
+   - Applications that are not yet installed can be installed or
+     deinstalled via `docker compose` in the corresponding folder.
    - Container status and exposed ports are retrieved from the Docker
      daemon and displayed on the dashboard.
 

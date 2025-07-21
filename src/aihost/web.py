@@ -8,10 +8,11 @@ from .gpu import get_gpu_stats
 from .container_manager import (
     list_containers,
     list_apps,
-    start_app,
-    stop_app,
-    rebuild_app,
-    remove_app,
+    start_container,
+    stop_container,
+    rebuild_container,
+    install_app,
+    deinstall_app,
 )
 
 app = Flask(__name__)
@@ -38,18 +39,27 @@ def dashboard():
     )
 
 
+@app.route("/containers", methods=["POST"])
+def containers_action():
+    name = request.form["name"]
+    action = request.form["action"]
+    if action == "start":
+        start_container(name)
+    elif action == "stop":
+        stop_container(name)
+    elif action == "rebuild":
+        rebuild_container(name)
+    return redirect(url_for("dashboard"))
+
+
 @app.route("/apps", methods=["POST"])
 def apps_action():
     name = request.form["name"]
     action = request.form["action"]
-    if action == "start":
-        start_app(name)
-    elif action == "stop":
-        stop_app(name)
-    elif action == "rebuild":
-        rebuild_app(name)
-    elif action == "remove":
-        remove_app(name)
+    if action == "install":
+        install_app(name)
+    elif action == "deinstall":
+        deinstall_app(name)
     return redirect(url_for("dashboard"))
 
 

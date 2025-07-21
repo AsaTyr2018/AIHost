@@ -15,9 +15,11 @@ See `AGENTS.md` for coding conventions and project structure.
 The application automatically detects available apps by scanning the
 `compose/` directory for subfolders that contain a `docker-compose.yml`
 file. The folder name becomes the application name. The web interface
-lists detected apps with controls to start, stop or rebuild them using
-`docker compose` commands executed in the respective folder. No manual
-repository registration or image building is performed by AIHost.
+shows running containers with buttons to start, stop or rebuild them,
+while available applications can be installed or deinstalled. Compose
+commands are only used for install, deinstall and rebuild operations and
+run in the respective application folder. No manual repository
+registration or image building is performed by AIHost.
 
 With images prepared ahead of time there is no in-place build step.
 Compose folders serve as the central storage location for each app and
@@ -27,8 +29,8 @@ A small Flask based web interface exposes these features. The interface
 uses a dark theme with rounded elements. The dashboard shows CPU and
 memory usage and, when available, GPU statistics such as VRAM
 utilization. It also counts running containers and links to their exposed
-ports. Detected applications are listed with start, stop, rebuild and
-remove controls executed through Docker Compose.
+ports. Detected applications are shown with install and deinstall
+controls, while running containers offer start, stop and rebuild buttons.
 
 ## Installation and Usage
 
